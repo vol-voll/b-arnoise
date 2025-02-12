@@ -1,0 +1,5 @@
+spotipy
+youtube_search
+yt_dlp
+os
+openai-whisper
