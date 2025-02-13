@@ -1,6 +1,6 @@
-from weird_shenanigan import logo
+from weird_shenanigan import logo, the_true_b_and_a_magic
 logo=logo()
-print(logo)
+the_true_b_and_a_magic()
 
 def ecrire_fichier(folder_path, file_name, text):
     from os import path
