@@ -2,6 +2,7 @@ from weird_shenanigan import logo, the_true_b_and_a_magic
 logo=logo()
 the_true_b_and_a_magic()
 
+
 def ecrire_fichier(folder_path, file_name, text):
     from os import path
     if not path.exists(folder_path):
@@ -128,9 +129,41 @@ def lister_fichiers_audio(dossier):
 
     return fichiers_audio
 
-# Exemple d'utilisation
+
+def meme_nom(premier_nom,deuxieme_nom):
+    """
+    Vérifie si au moins un mot significatif du premier nom est présent dans le deuxième nom.
+
+    Args:
+        premier_nom (str): Le premier nom à comparer.
+        deuxieme_nom (str): Le deuxième nom à comparer.
+
+    Returns:
+        bool: True si un mot du premier nom (d'au moins 4 lettres) est présent dans le deuxième nom, sinon False.
+    """
+    premier_nom, deuxieme_nom = premier_nom.lower(), deuxieme_nom.lower()
+    if len(premier_nom) > len(deuxieme_nom):
+        premier_nom, deuxieme_nom = deuxieme_nom, premier_nom
+    liste_des_mot_du_premier_nom = premier_nom.split()
+    liste_des_mot_du_premier_nom_final = liste_des_mot_du_premier_nom.copy()
+    reglage_d_indice=0
+    for indice in range(len(liste_des_mot_du_premier_nom)):
+        if len(liste_des_mot_du_premier_nom[indice]) < 4:
+            liste_des_mot_du_premier_nom_final.pop(indice-reglage_d_indice)
+            reglage_d_indice+=1
+    if liste_des_mot_du_premier_nom_final == []:
+        liste_des_mot_du_premier_nom_final = liste_des_mot_du_premier_nom
+    dictionnaire_des_mot_du_deuxieme_nom = dict(zip(deuxieme_nom.split(),[i for i in range(len(deuxieme_nom.split()))]))
+    for mot in liste_des_mot_du_premier_nom_final:
+        if mot in dictionnaire_des_mot_du_deuxieme_nom:
+            return True
+    return False
+    
+
 chemin_de_depart = "."  # "." signifie le dossier actuel
 liste_des_fichiers_audio = lister_fichiers_audio(chemin_de_depart)
 
 a = tous_les_noms_d_une_playlist("2rBmkvV5eifqVNBfzcMDGZ")
 print(a[0])
+
+print(meme_nom("SAINt JHN - Roses (Imanbek Remix)","SAINt JHN - Roses (Imanbek Remix) (Official Music Video)"))
