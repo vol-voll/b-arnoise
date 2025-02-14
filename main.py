@@ -119,7 +119,7 @@ def lister_fichiers_audio(dossier):
     from os import walk, path
 
     fichiers_audio = []
-    music_formats = {".mp3", ".m4a", ".wav", ".aac", ".ogg", ".pcm", ".caf", ".flac", ".alac", ".aiff", ".aif", ".dsd", ".dsf"}
+    music_formats = {".mp3", ".m4a", ".wav", ".aac", ".ogg", ".pcm", ".caf", ".flac", ".alac", ".aiff", ".aif", ".dsd", ".dsf", "ape", "mpga", "oga", "opus"}
 
     for _, _, fichiers in walk(dossier):  
         for fichier in fichiers:
