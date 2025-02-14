@@ -142,23 +142,42 @@ def meme_nom(premier_nom,deuxieme_nom):
         bool: True si un mot du premier nom (d'au moins 4 lettres) est présent dans le deuxième nom, sinon False.
     """
     premier_nom, deuxieme_nom = premier_nom.lower(), deuxieme_nom.lower()
+
     if len(premier_nom) > len(deuxieme_nom):
         premier_nom, deuxieme_nom = deuxieme_nom, premier_nom
     liste_des_mot_du_premier_nom = premier_nom.split()
+
     liste_des_mot_du_premier_nom_final = liste_des_mot_du_premier_nom.copy()
+
     reglage_d_indice=0
+
     for indice in range(len(liste_des_mot_du_premier_nom)):
         if len(liste_des_mot_du_premier_nom[indice]) < 4:
             liste_des_mot_du_premier_nom_final.pop(indice-reglage_d_indice)
             reglage_d_indice+=1
+    
     if liste_des_mot_du_premier_nom_final == []:
         liste_des_mot_du_premier_nom_final = liste_des_mot_du_premier_nom
+    
     dictionnaire_des_mot_du_deuxieme_nom = dict(zip(deuxieme_nom.split(),[i for i in range(len(deuxieme_nom.split()))]))
+    
     for mot in liste_des_mot_du_premier_nom_final:
         if mot in dictionnaire_des_mot_du_deuxieme_nom:
             return True
     return False
+
+def chercher_youtube(recherche):
+    from youtube_search import YoutubeSearch
+
+    results = YoutubeSearch(str(recherche), max_results=1).to_dict()
     
+    duration = results[0]["duration"].split(":")
+    duration_ms = duration[0] * 60000 + duration[1] * 1000
+
+    url = results[0]["url_suffix"]
+    url = "http://youtube.com" + a
+
+    return [results[0]["title"], duration_ms, results[0]["channel"], results[0]["thumbnails"][1],url]
 
 chemin_de_depart = "."  # "." signifie le dossier actuel
 liste_des_fichiers_audio = lister_fichiers_audio(chemin_de_depart)
@@ -166,4 +185,4 @@ liste_des_fichiers_audio = lister_fichiers_audio(chemin_de_depart)
 a = tous_les_noms_d_une_playlist("2rBmkvV5eifqVNBfzcMDGZ")
 print(a[0])
 
-print(meme_nom("SAINt JHN - Roses (Imanbek Remix)","SAINt JHN - Roses (Imanbek Remix) (Official Music Video)"))
+#print(meme_nom("SAINt JHN - Roses (Imanbek Remix)","SAINt JHN - Roses (Imanbek Remix) (Official Music Video)"))
