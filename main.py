@@ -166,23 +166,64 @@ def meme_nom(premier_nom,deuxieme_nom):
             return True
     return False
 
+
 def chercher_youtube(recherche):
     from youtube_search import YoutubeSearch
 
     results = YoutubeSearch(str(recherche), max_results=1).to_dict()
     
     duration = results[0]["duration"].split(":")
-    duration_ms = duration[0] * 60000 + duration[1] * 1000
+    duration_ms = int(duration[0]) * 60000 + int(duration[1]) * 1000
 
     url = results[0]["url_suffix"]
-    url = "http://youtube.com" + a
+    url = "http://youtube.com" + url
 
     return [results[0]["title"], duration_ms, results[0]["channel"], results[0]["thumbnails"][1],url]
 
+
+def download_music(url, output_folder="."):
+    from yt_dlp import YoutubeDL
+    from os import path, makedirs
+    """
+    Télécharge une musique.
+
+    Args:
+        url (str): L'URL de la musique.
+        output_folder (str): Dossier où sauvegarder les fichiers téléchargés.
+    """
+    if not path.exists(output_folder):
+        makedirs(output_folder)
+
+    ydl_opts = {
+        'format': 'bestaudio/best',
+        'postprocessors': [{
+            'key': 'FFmpegExtractAudio',
+            'preferredcodec': 'm4a',
+            #'preferredquality': '192',  # Qualité audio (en kbps)
+        }],
+        'outtmpl': path.join(output_folder, '%(title)s.%(ext)s'),
+        'restrictfilenames': True,
+        'noplaylist': False,
+    }
+    
+    try:
+        with YoutubeDL(ydl_opts) as ydl:
+            print("Téléchargement en cours...")
+            ydl.download([url])
+    except Exception as e:
+        print(f"Une erreur est survenue avec le téléchargement de {url}: {e}")
+
+
+"""
 chemin_de_depart = "."  # "." signifie le dossier actuel
 liste_des_fichiers_audio = lister_fichiers_audio(chemin_de_depart)
 
 a = tous_les_noms_d_une_playlist("2rBmkvV5eifqVNBfzcMDGZ")
 print(a[0])
 
-#print(meme_nom("SAINt JHN - Roses (Imanbek Remix)","SAINt JHN - Roses (Imanbek Remix) (Official Music Video)"))
+print(meme_nom("SAINt JHN - Roses (Imanbek Remix)","SAINt JHN - Roses (Imanbek Remix) (Official Music Video)"))
+
+print(chercher_youtube("SAINt JHN - Roses (Imanbek Remix)"))
+
+download_music("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+"""
