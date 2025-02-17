@@ -2,4 +2,5 @@ spotipy
 youtube_search
 yt_dlp
 os
+pytest-playwright # /!\ You have to run "playwright install" in your terminal /!\
 #openai-whisper
