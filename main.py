@@ -11,9 +11,9 @@ def ecrire_fichier(folder_path, file_name, text):
         full_file_path = path.join(folder_path, file_name)
 
         if path.exists(full_file_path):
-            file = open(full_file_path, 'a')
+            file = open(full_file_path, 'a', encoding="utf-8")
         else:
-            file = open(full_file_path, 'w')
+            file = open(full_file_path, 'w', encoding="utf-8")
 
         file.write(text)
         file.close()
@@ -226,4 +226,6 @@ print(meme_nom("SAINt JHN - Roses (Imanbek Remix)","SAINt JHN - Roses (Imanbek R
 print(chercher_youtube("SAINt JHN - Roses (Imanbek Remix)"))
 
 download_music("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+
+tous_les_noms_d_une_playlist("2rBmkvV5eifqVNBfzcMDGZ")
 """
