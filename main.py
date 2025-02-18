@@ -5,6 +5,11 @@ the_true_b_and_a_magic()
 
 def ecrire_fichier(folder_path, file_name, text):
     from os import path
+    if type(text) == type([]):
+        a = ""
+        for i in text:
+            a = a+str(i)+"\n"  
+        text = a
     if not path.exists(folder_path):
         print("The specified directory does not exist.")
     else:
@@ -19,13 +24,13 @@ def ecrire_fichier(folder_path, file_name, text):
         file.close()
 
 
-def lire_fichier(chemin_fichier,coupe):
+def lire_fichier(chemin_fichier,coupe = ""):
     """
     Lit un fichier texte et cree une liste pour chaque ligne.
 
     Args:
         chemin_fichier (str): Chemin du fichier à lire.
-        coupe (str): Entre quelle caractaire couper "" <=> "\n" 
+        coupe (str): Entre quelle caractaire couper "" <=> "\\n" 
 
     Returns:
         list: Liste contenant chaque ligne.
@@ -62,7 +67,7 @@ def tous_les_noms_d_une_playlist(URL):
         - Imprime un message d'erreur et renvoie None si un problème survient lors de la récupération de la liste de lecture à partir de l'API Spotify.
     """
     try:
-        Key = lire_fichier("PrivateKey","")
+        Key = lire_fichier("PrivateKey")
         client_id,client_secret,redirect_uri = Key[0],Key[1],Key[2]
     except:
         client_id,client_secret = "",""
@@ -221,18 +226,14 @@ def chercher_soundcloud(recherche):
             else:
                 image_url = "No artwork span found."
 
+            browser.close()
             return [title, "", artist, image_url, f"https://soundcloud.com{link}"]
             
         else:
-            print("No results found.")
-
-        # Close the browser
-        browser.close()
+            browser.close()
 
 
-def download_music(url, output_folder="."):
-    from yt_dlp import YoutubeDL
-    from os import path, makedirs
+def download_music(url, output_folder=".", file_type="mp3"):
     """
     Télécharge une musique.
 
@@ -240,6 +241,9 @@ def download_music(url, output_folder="."):
         url (str): L'URL de la musique.
         output_folder (str): Dossier où sauvegarder les fichiers téléchargés.
     """
+    from yt_dlp import YoutubeDL
+    from os import path, makedirs
+
     if not path.exists(output_folder):
         makedirs(output_folder)
 
@@ -247,7 +251,7 @@ def download_music(url, output_folder="."):
         'format': 'bestaudio/best',
         'postprocessors': [{
             'key': 'FFmpegExtractAudio',
-            'preferredcodec': 'm4a',
+            'preferredcodec': file_type,
             #'preferredquality': '192',  # Qualité audio (en kbps)
         }],
         'outtmpl': path.join(output_folder, '%(title)s.%(ext)s'),
@@ -264,17 +268,50 @@ def download_music(url, output_folder="."):
 
 
 """
-chemin_de_depart = "."  # "." signifie le dossier actuel
-liste_des_fichiers_audio = lister_fichiers_audio(chemin_de_depart)
-
-a = tous_les_noms_d_une_playlist("2rBmkvV5eifqVNBfzcMDGZ")
-print(a[0])
 
 print(meme_nom("SAINt JHN - Roses (Imanbek Remix)","SAINt JHN - Roses (Imanbek Remix) (Official Music Video)"))
 
 print(chercher_youtube("SAINt JHN - Roses (Imanbek Remix)"))
 
 download_music("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
-
-tous_les_noms_d_une_playlist("2rBmkvV5eifqVNBfzcMDGZ")
 """
+
+import os.path
+if os.path.exists("option.txt"):
+    try :
+        url,chemin_d_enregistrement,platforme_d_enregistrement = lire_fichier("option.txt")[0], lire_fichier("option.txt")[1], lire_fichier("option.txt")[2]
+    except:
+        from os import rename
+        from uuid import uuid4
+        rename("option.txt", str(uuid4())+"option.txt")
+    
+if not os.path.exists("option.txt"):
+    url = "empty"
+    while len(url) != 22:
+        url = input("Veuillez entrer la fin de l'URL de la playlist Spotify : ")
+    
+    chemin_d_enregistrement = "empty"
+    while not os.path.exists(chemin_d_enregistrement):
+        chemin_d_enregistrement = input("Veuillez indiquer l'emplacement d'enregistrement des fichiers musicaux ET où sont enregistrés vos anciens fichiers (. <=> ce fichier) : ")
+    
+    platforme_d_enregistrement=""
+    while platforme_d_enregistrement.lower()!="youtube" and platforme_d_enregistrement.lower()!="soundcloud" and platforme_d_enregistrement.lower()!="s" and platforme_d_enregistrement.lower()!="y" and platforme_d_enregistrement.lower()!="sy" and platforme_d_enregistrement.lower()!="ys" and platforme_d_enregistrement != "":
+        platforme_d_enregistrement = input("Préférez-vous télécharger sur YouTube, SoundCloud ou les deux ? Indiquez votre ordre de préférence. (s pour SoundCloud and y pour YouTube) (Default : sy) : ")
+    platforme_d_enregistrement = platforme_d_enregistrement.lower()
+    
+    if platforme_d_enregistrement == "youtube":
+        platforme_d_enregistrement = "y"
+    elif platforme_d_enregistrement == "soundcloud":
+        platforme_d_enregistrement = "s"
+    elif platforme_d_enregistrement == "":
+        platforme_d_enregistrement = "sy"
+    
+    a=""
+    while a.lower()!="o" and a.lower()!="n" and a.lower()!="oui" and a.lower()!="non" and a!="":
+        a = input("Voulez vous sauvgardez pour des prochaine utilisation ? (O ou n) : ") 
+    
+    if a.lower()!="o" or a.lower()!="oui" or a!="":
+        ecrire_fichier(".","option.txt",[url,chemin_d_enregistrement])
+
+liste_des_fichiers_audio = lister_fichiers_audio(chemin_d_enregistrement)
+tous_les_songs_playlist = tous_les_noms_d_une_playlist(url)
