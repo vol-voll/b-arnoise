@@ -172,6 +172,23 @@ def meme_nom(premier_nom,deuxieme_nom):
     return False
 
 
+def meme_nom_dans_la_liste(nom,liste_de_nom):
+    """
+    Vérifie si le nom est dans la liste.
+
+    Args:
+        nom (str): Le nom à comparer.
+        liste (str): La liste.
+
+    Returns:
+        bool: True si nom est présent dans la liste, sinon False.
+    """
+    for nom_de_la_liste in liste_de_nom:
+        if meme_nom(nom,nom_de_la_liste):
+            return True
+    return False
+
+
 def chercher_youtube(recherche):
     from youtube_search import YoutubeSearch
 
@@ -188,8 +205,8 @@ def chercher_youtube(recherche):
 
 def chercher_soundcloud(recherche):
     from playwright.sync_api import sync_playwright
-    import re.search
-    import urllib.parse.quote
+    from re import search
+    import urllib.parse
  
     with sync_playwright() as p:
         # Launch the browser
@@ -201,12 +218,22 @@ def chercher_soundcloud(recherche):
         page.goto(url)
 
         # Wait for the search results to load
-        page.wait_for_selector('div.searchItem')
-
+        try :
+            page.wait_for_selector('div.searchItem')
+        except:
+            return ["" for i in range(5)]
+        
         # Extract the first result
         results = page.query_selector_all('div.searchItem')
         if results:
+            a=0
             first_result = results[0]
+            while type (first_result.query_selector('a.soundTitle__title')) == type(None) or a == 4:
+                a+=1
+                first_result = results[a]
+            if a == 4 :
+                print("le programe vas planter des pot de je ne sais quoi...")
+                return
 
             # Extract title and artist
             title = first_result.query_selector('a.soundTitle__title').inner_text()
@@ -218,7 +245,7 @@ def chercher_soundcloud(recherche):
             if span_element:
                 style = span_element.get_attribute('style')
                 # Use regex to extract the URL from the style attribute
-                match = re.search(r'url\("([^"]+)"\)', style)
+                match = search(r'url\("([^"]+)"\)', style)
                 if match:
                     image_url = match.group(1)
                 else:
@@ -315,3 +342,29 @@ if not os.path.exists("option.txt"):
 
 liste_des_fichiers_audio = lister_fichiers_audio(chemin_d_enregistrement)
 tous_les_songs_playlist = tous_les_noms_d_une_playlist(url)
+
+if os.path.exists("musiques_telecharger.txt"):
+    song_telecharger = lire_fichier("musiques_telecharger.txt")
+else:
+    song_telecharger = []
+    file = open("musiques_telecharger.txt", 'w', encoding="utf-8")
+    file.close()
+
+for music in song_telecharger:
+    if not music in liste_des_fichiers_audio:
+        liste_des_fichiers_audio.append(music)
+
+for music in tous_les_songs_playlist:
+    if not meme_nom_dans_la_liste(music[0], liste_des_fichiers_audio):
+        if platforme_d_enregistrement == "sy":
+            resultat_soundcloud = chercher_soundcloud(music[0])
+            if meme_nom(resultat_soundcloud[0], music[0]):
+                download_music(resultat_soundcloud[4],chemin_d_enregistrement)
+                ecrire_fichier(".","musiques_telecharger.txt",music[0])
+            else:
+                resultat_youtube = chercher_youtube(music[0])
+                if meme_nom(resultat_youtube[0], music[0]):
+                    download_music(resultat_youtube[4],chemin_d_enregistrement)
+                    ecrire_fichier(".","musiques_telecharger.txt",music[0])
+                else:
+                    ecrire_fichier(".","musiques_introuvable.txt",str(music))
