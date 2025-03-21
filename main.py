@@ -321,7 +321,7 @@ if not os.path.exists("option.txt"):
     while not os.path.exists(chemin_d_enregistrement):
         chemin_d_enregistrement = input("Veuillez indiquer l'emplacement d'enregistrement des fichiers musicaux ET où sont enregistrés vos anciens fichiers (. <=> ce fichier) : ")
     
-    platforme_d_enregistrement=""
+    platforme_d_enregistrement=None
     while platforme_d_enregistrement.lower()!="youtube" and platforme_d_enregistrement.lower()!="soundcloud" and platforme_d_enregistrement.lower()!="s" and platforme_d_enregistrement.lower()!="y" and platforme_d_enregistrement.lower()!="sy" and platforme_d_enregistrement.lower()!="ys" and platforme_d_enregistrement != "":
         platforme_d_enregistrement = input("Préférez-vous télécharger sur YouTube, SoundCloud ou les deux ? Indiquez votre ordre de préférence. (s pour SoundCloud and y pour YouTube) (Default : sy) : ")
     platforme_d_enregistrement = platforme_d_enregistrement.lower()
@@ -333,7 +333,7 @@ if not os.path.exists("option.txt"):
     elif platforme_d_enregistrement == "":
         platforme_d_enregistrement = "sy"
     
-    a=""
+    a=None
     while a.lower()!="o" and a.lower()!="n" and a.lower()!="oui" and a.lower()!="non" and a!="":
         a = input("Voulez vous sauvgardez pour des prochaine utilisation ? (O ou n) : ") 
     
