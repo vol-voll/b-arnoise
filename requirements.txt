@@ -3,5 +3,5 @@ youtube_search
 yt_dlp
 datetime
 os
-mutagen.mp4
+mutagen
 urllib.request
