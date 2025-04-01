@@ -113,10 +113,11 @@ fichiers_audio = lister_fichiers_audio('downloads')
 
 
 def name_comparison(rech, prop):
-    if rech not in fichiers_audio and (rech[1].lower() in prop[0].lower() or rech[0].lower() in prop[0].lower()):
-        return True
-    else :
-        return False
+    ChansonRecherchee=(rech[0].lower()+' - '+rech[1].lower()).split(' - ')
+    for Partie in ChansonRecherchee:
+        if Partie in prop[0].lower():
+            return True
+    return False
 
 def duration_comparison(rech, prop):
     duration = prop[1].split(":")
@@ -130,21 +131,23 @@ def duration_comparison(rech, prop):
 def GetBest(Banger):
     conserve=[]
     try :
-        results = YoutubeSearch(Banger[0]+' - '+Banger[1], max_results=5).to_dict()
+        results = YoutubeSearch(Banger[0]+' '+Banger[1], max_results=5).to_dict()
         for chanson in results:
             chanson = (chanson['title'], chanson['duration'], chanson['url_suffix'])
             delta=duration_comparison(Banger, chanson)
             if delta!=None and name_comparison(Banger, chanson):
                 conserve.append([chanson[0], chanson[2], round(delta/1000,3)])
+        if conserve==[]:
+            if input(f"O/N Aucune coreespondace n'a été trouvé pour {Banger[0]+' '+Banger[1]}, souhaitez vous garder malgré tout : {results[0][0]}") == 'O':
+                return results[0][2]
         deltamin=5
         mChanson=0
         for i in range(len(conserve)):
             if conserve[i][2]<deltamin:
                 deltamin=conserve[i][2]
                 mChanson=i
-        if len(conserve)==0: 
-            return None
-        return conserve[mChanson]
+
+        return conserve[mChanson][1]
     except Exception as e:
         print(f"Une erreur est survenue avec la recherche de {Banger}: {e}")
         ecrire_fichier(".", "Reports", f"\nErreur avec {Banger[0]} - {Banger[1]}, cause : {e}")
