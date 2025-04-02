@@ -8,6 +8,7 @@ from os import path, rename, remove
 from mutagen.mp4 import MP4, MP4Cover
 import urllib.request
 
+
 logo=logo()
 the_true_b_and_a_magic()
 
@@ -25,6 +26,7 @@ def ecrire_fichier(folder_path, file_name, text):
 
         file.write(text)
         file.close()
+
 
 def lire_fichier(chemin_fichier,coupe = ""):
     """
@@ -82,6 +84,7 @@ def Lister_Chansons_Playlist():
         decalage += 100
     return liste_des_titres
 
+
 def lister_fichiers_audio(dossier):
     """
     Explore récursivement un dossier et stocke uniquement les fichiers audio trouvés,
@@ -109,7 +112,8 @@ def lister_fichiers_audio(dossier):
 
 fichiers_audio = lister_fichiers_audio('downloads')
 
-###Recherche des chansons sur Youtube###
+
+#####Recherche des chansons sur Youtube#####
 
 
 def name_comparison(rech, prop):
@@ -117,6 +121,7 @@ def name_comparison(rech, prop):
         return True
     else :
         return False
+
 
 def duration_comparison(rech, prop):
     duration = prop[1].split(":")
@@ -126,6 +131,7 @@ def duration_comparison(rech, prop):
         return delta
     else :
         return None
+
 
 def GetBest(Banger):
     conserve=[]
@@ -150,7 +156,10 @@ def GetBest(Banger):
         ecrire_fichier(".", "Reports", f"\nErreur avec {Banger[0]} - {Banger[1]}, cause : {e}")
         return "Merde"
 
+
 ###Téléchargement de la chanson###
+
+
 def Telecharger_Chanson(lien_downloads):
     ydl_opts = {
         'format': 'bestaudio/best',
@@ -181,6 +190,7 @@ def Telecharger_Chanson(lien_downloads):
             remove('Pochette.jpg')
             rename(f"downloads/{ProcessedBanger['nomVideo']}.m4a", "downloads/"+ProcessedBanger['nomChanson']+' - '+ProcessedBanger['artistePrincipal']+".m4a")
 
+
 def Processing():
     liste_des_titres=Lister_Chansons_Playlist()
     lien_downloads=[]
@@ -194,8 +204,11 @@ def Processing():
     fichiers_audio = lister_fichiers_audio('downloads')
     return None
 
+
 if path.exists(path.join(".", "Reports")):
     ecrire_fichier(".", "Reports", f"\n\n{str(datetime.now())[:20]} execution Report")
 else: 
     ecrire_fichier(".", "Reports", f"{logo}\nReport of errors encountered while searching or downloading songs\n{str(datetime.now())} execution Report")
+
+
 Processing()
