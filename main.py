@@ -185,8 +185,8 @@ def Telecharger_Chanson(lien_downloads):
                     audio['covr']=[MP4Cover(pochette.read(), imageformat=MP4Cover.FORMAT_JPEG)]
                 audio.save()
             except Exception as e:
-                print(f"Une erreur lors de l'édition de {Banger}: {e}")
-                ecrire_fichier(".", "Reports", f"\nUne erreur lors de l'édition de {Banger[0]} - {Banger[1]}, cause : {e}")
+                print(f"Une erreur lors de l'édition de {ProcessedBanger["nomChanson"]}: {e}")
+                ecrire_fichier(".", "Reports", f"\nUne erreur lors de l'édition de {ProcessedBanger["nomChanson"]}, cause : {e}")
             remove('Pochette.jpg')
             rename(f"downloads/{ProcessedBanger['nomVideo']}.m4a", "downloads/"+ProcessedBanger['nomChanson']+' - '+ProcessedBanger['artistePrincipal']+".m4a")
 
