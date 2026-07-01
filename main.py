@@ -138,7 +138,7 @@ def GetBest(Banger):
     try :
         results = YoutubeSearch(Banger[0]+' - '+Banger[1], max_results=5).to_dict()
         for chanson in results:
-            chanson = (chanson['title'], chanson['duration'], chanson['url_suffix'])
+            chanson = (chanson['title'], chanson['duration'], chanson['url_suffix'][:20])
             delta=duration_comparison(Banger, chanson)
             if delta!=None and name_comparison(Banger, chanson):
                 conserve.append([chanson[0], chanson[2], round(delta/1000,3)])
